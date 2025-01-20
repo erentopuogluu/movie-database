@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErenDB </title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .main-header {
+            background-color: #222;
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .user-info {
+            font-size: 1em;
+            color: #f39c12;
+        }
+
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin: 0 15px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: #f39c12;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: #f39c12;
+            color: #fff;
+        }
+
+        .movie-section {
+            padding: 20px;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .movie-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .movie-card h3 {
+            margin: 10px 0;
+        }
+
+        .favorite-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f39c12;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .favorite-button:hover {
+            background: #e67e22;
+        }
+
+        .comment-section {
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .comment-section textarea {
+            width: 100%;
+            height: 50px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .comment-section button {
+            background: #f39c12;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .comment-section button:hover {
+            background: #e67e22;
+        }
+
+        .comments-list {
+            margin-top: 10px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .comments-list li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .main-footer {
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            padding: 10px 20px;
+        }
+
+        #login-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        #login-modal.active {
+            display: block;
+        }
+
+        #login-modal input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #login-modal button {
+            padding: 10px 20px;
+            background: #f39c12;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #login-modal button:hover {
+            background: #e67e22;
+        }
+
+        #favorite-list {
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        #favorite-list h2 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">ErenDB</div>
+        <div class="user-info" id="user-info">Welcome!</div>
+        <nav class="navbar">
+            <ul>
+                
+                <li><a href="#">Anasayfa</a></li>
+                <li><a href="#filmler">Movies</a></li>
+                <li><a href="#diziler">Tv Shows</a></li>
+        
+                <li><a href="#hakkinda">About Us</a></li>
+                <li><a href="#iletisim">Contact Information</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Discover Your Favorite Movies and TV Series</h1>
+            <p>ErenDB offers the most popular movies and series for you!</p>
+            <button onclick="openLoginModal()">Log in</button>
+        </section>
+        <section id="filmler" class="movie-section">
+            <h2 id="movie-section-title">Popular Movies</h2>
+            <div class="filter-container">
+                <label for="category-filter">Filter by Category:</label>
+                <select id="category-filter" onchange="filterByCategory()">
+                    <option value="">All</option>
+                    <option value="Action">Action</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Drama">Drama</option>
+                    <option value="History">History</option>
+                    <option value="Crime">Crime</option>
+                    <option value="Fantastic">Fantastic</option>
+                    <option value="Science fiction">Science fiction</option>
+                    <option value="Thriller">Thriller</option>
+                </select>
+            </div>
+            <input type="text" id="search-bar" placeholder="Movie Search..." onkeyup="searchMovies()" style="margin-bottom: 20px; padding: 10px; width: 100%;">
+            <div class="movie-grid" id="movie-grid"></div>
+        </section>
+        
+        <section id="diziler" class="movie-section">
+            <h2>Popular TV Series</h2>
+            <div class="filter-container">
+                <label for="series-category-filter">Filter by Category:</label>
+                <select id="series-category-filter" onchange="filterSeriesByCategory()">
+                    <option value="">All</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Action">Action</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Science Fiction">Science Fiction</option>
+                    <option value="Crime">Crime</option>
+                </select>
+            </div>
+            <input type="text" id="series-search-bar" placeholder="Search for TV series..." onkeyup="searchSeries()" style="margin-bottom: 20px; padding: 10px; width: 100%;">
+            <div class="movie-grid" id="series-grid"></div>
+        </section>
+        
+       
+            </div>
+            
+            <div class="movie-grid" id="movie-grid">
+      
+                <script>
+                    // Film verilerini ve film kartlarını oluşturan kod
+                    const movieData = [
+                        { title: "The Shawshank Redemption", category: "Dram", image: "images/shawsank.jpg",rating: 9.3 },
+                        { title: "The Godfather", category: "Dram", image: "images/godfather.jpg" ,rating: 9.2},
+                        { title: "The Dark Knight", category: "Action", image: "images/karasovalye.jpg" ,rating: 9.1 },
+                        { title: "Schindler's List", category: "History", image: "images/schanderl.jpg" ,rating: 8.9 },
+                        { title: "Pulp Fiction", category: "Crime", image: "images/pulpfıctıon.jpg",rating: 9.0  },
+                        { title: "The Lord of the Rings: The Return of the King", category: "Fantastic", image: "images/lotr_return.jpg" ,rating: 9.4},
+                        { title: "Forrest Gump", category: "Drama", image: "images/forrest_gump.jpg",rating: 8.7 },
+                        { title: "Inception", category: "Science fiction", image: "images/inception.jpg",rating: 9.3  },
+                        { title: "Fight Club", category: "Drama", image: "images/fight_club.jpg",rating: 9.4  },
+                        { title: "The Matrix", category: "  Science fiction", image: "images/matrix.jpg" ,rating: 9.2 },
+                        { title: "Goodfellas", category: "Crime", image: "images/goodfellas.jpg",rating: 8.8  },
+                        { title: "The Silence of the Lambs", category: "Thriller", image: "images/silence_lambs.jpg",rating: 9.2  },
+                        { title: "Se7en", category: "Crime", image: "images/seven.jpg",rating: 9.8  },
+                        { title: "The Green Mile", category: "Drama", image: "images/green_mile.jpg",rating: 9.7  },
+                        { title: "Interstellar", category: "Science fiction", image: "images/interstellar.jpg",rating: 9.5  },
+                        { title: "Parasite", category: "Thriller", image: "images/parasite.jpg" ,rating: 9.1 },
+                        { title: "Gladiator", category: "Action", image: "images/gladiator.jpg",rating: 8.1  },
+                        { title: "Whiplash", category: "Drama", image: "images/whiplash.jpg",rating: 7.9  },
+                        { title: "The Departed", category: "Crime", image: "images/departed.jpg",rating: 9.4  },
+                        { title: "The Prestige", category: "Thriller", image: "images/prestige.jpg",rating: 9.3  }
+                        
+                    ];
+                    const seriesData = [
+    { title: "Breaking Bad", category: "Drama", image: "images/breakingbad.jpg", rating: 9.5 },
+    { title: "Game of Thrones", category: "Drama", image: "images/got.jpg", rating: 9.3 },
+    { title: "Stranger Things", category: "Science Fiction", image: "images/stranger_things.jpg", rating: 8.7 },
+    { title: "The Witcher", category: "Drama", image: "images/the_witcher.jpg", rating: 8.2 },
+    { title: "Sherlock", category: "Crime", image: "images/sherlock.jpg", rating: 9.1 },
+    { title: "Friends", category: "Comedy", image: "images/friends.jpg", rating: 8.9 },
+    { title: "The Office", category: "Comedy", image: "images/the_office.jpg", rating: 8.8 },
+    { title: "The Mandalorian", category: "Action", image: "images/the_mandolarian.jpg", rating: 8.8 },
+    { title: "House of Cards", category: "Drama", image: "images/houseofcards.jpg", rating: 8.7 },
+    { title: "The Crown", category: "Drama", image: "images/crown.jpg", rating: 8.6 },
+    { title: "Dark", category: "Science Fiction", image: "images/dark.jpg", rating: 8.8 },
+    { title: "Narcos", category: "Crime", image: "images/narcos.jpg", rating: 8.8 },
+    { title: "Ozark", category: "Drama", image: "images/ozark.jpg", rating: 8.5 },
+    { title: "Better Call Saul", category: "Drama", image: "images/better_call_saul.jpg", rating: 8.8 },
+    { title: "The Boys", category: "Action", image: "images/the_boys.jpg", rating: 8.7 },
+    { title: "Peaky Blinders", category: "Crime", image: "images/pekay_blinders.png", rating: 8.8 },
+    { title: "The Simpsons", category: "Comedy", image: "images/the_simpsons.jpg", rating: 8.6 },
+    { title: "The Big Bang Theory", category: "Comedy", image: "images/big_bang_theory.jpg", rating: 8.2 },
+    { title: "The Expanse", category: "Science Fiction", image: "images/expanse.jpg", rating: 8.5 },
+    { title: "Black Mirror", category: "Science Fiction", image: "images/black_mirror.jpg", rating: 8.8 },
+];
+
+                
+                    const movieGrid = document.getElementById("movie-grid");
+
+movieData.forEach((movie) => {
+    const movieCard = `
+        <div class="movie-card" data-category="${movie.category}">
+            <img src="${movie.image}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+            <p>Tür: ${movie.category}</p>
+            <p>Rating: ⭐ ${movie.rating}</p>
+            <button class="favorite-button" onclick="toggleFavorite(this, '${movie.title}')">Add to Favorites</button>
+            <div class="comment-section">
+                <textarea placeholder="Write your comment..."></textarea>
+                <button onclick="addComment(this, '${movie.title}')">Leave a comment</button>
+                <ul class="comments-list"></ul>
+            </div>
+        </div>
+    `;
+    movieGrid.innerHTML += movieCard;
+
+});
+const seriesGrid = document.getElementById("series-grid");
+
+seriesData.forEach((series) => {
+    const seriesCard = `
+        <div class="movie-card" data-category="${series.category}">
+            <img src="${series.image}" alt="${series.title}">
+            <h3>${series.title}</h3>
+            <p>Tür: ${series.category}</p>
+            <p>Rating: ⭐ ${series.rating}</p>
+            <button class="favorite-button" onclick="toggleSeriesFavorite(this, '${series.title}')">Add to Favorites</button>
+            <div class="comment-section">
+                <textarea placeholder="Write your comment..."></textarea>
+                <button onclick="addComment(this, '${series.title}')">Leave a comment</button>
+                <ul class="comments-list"></ul>
+            </div>
+        </div>
+    `;
+    seriesGrid.innerHTML += seriesCard;
+});
+
+
+                </script>
+                
+            </div>
+        </section>
+
+        <section id="favorite-list">
+            <h2>Favori Filmleriniz</h2>
+
+            <ul id="favorites"></ul>
+
+        </section>
+
+        <section id="series-favorite-list">
+            <h2>Favori Dizileriniz</h2>
+            <ul id="series-favorites"></ul>
+        </section>
+        
+
+        <section id="iletisim">
+            <h2>Contact Information</h2>
+            <p><strong>Instagram:</strong> erentopuoglu</p>
+            <p><strong>X:</strong> erentopuoglu</p>
+            <p><strong>Mail:</strong> 225060034@toros.edu.tr</p>
+        </section>
+
+        <section id="hakkinda">
+            <h2>About Us</h2>
+            <p>ErenDB was founded in 2024. All rights reserved.</p>
+        </section>
+    </main>
+
+    <div id="login-modal">
+        <h2>User Log in</h2>
+        <input type="text" id="username" placeholder="Kullanıcı Adı">
+        <input type="password" id="password" placeholder="Şifre">
+        <button onclick="login()">Log in</button>
+    </div>
+
+    <footer class="main-footer">
+        <p>&copy; 2024 ErenDB. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function openLoginModal() {
+            document.getElementById('login-modal').classList.add('active');
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                document.getElementById('user-info').textContent = `Welcome ${username}!`;
+                document.getElementById('movie-section-title').textContent = `${username} 20 Movies We Recommend for`;
+                document.getElementById('login-modal').classList.remove('active');
+            } else {
+                alert('Please enter your username and password.');
+            }
+        }
+
+        function toggleFavorite(button, movieName) {
+            const favoritesList = document.getElementById('favorites');
+            if (button.textContent === 'Add Favorites') {
+                const listItem = document.createElement('li');
+                listItem.textContent = movieName;
+                favoritesList.appendChild(listItem);
+                button.textContent = 'Remove Favorites';
+            } else {
+                const items = favoritesList.querySelectorAll('li');
+                items.forEach(item => {
+                    if (item.textContent === movieName) {
+                        favoritesList.removeChild(item);
+                    }
+                });
+                button.textContent = 'Add Favorites';
+            }
+        }
+
+function toggleSeriesFavorite(button, seriesName) {
+    const seriesFavoritesList = document.getElementById('series-favorites');
+    if (button.textContent === 'Add Favorites') {
+        const listItem = document.createElement('li');
+        listItem.textContent = seriesName;
+        seriesFavoritesList.appendChild(listItem);
+        button.textContent = 'Remove Favorites';
+    } else {
+        const items = seriesFavoritesList.querySelectorAll('li');
+        items.forEach(item => {
+            if (item.textContent === seriesName) {
+                seriesFavoritesList.removeChild(item);
+            }
+        });
+        button.textContent = 'Add Favorites';
+    }
+}
+
+        function addComment(button, movieName) {
+            const commentSection = button.parentElement;
+            const textarea = commentSection.querySelector('textarea');
+            const commentsList = commentSection.querySelector('.comments-list');
+
+            if (textarea.value.trim() !== '') {
+                const comment = document.createElement('li');
+                comment.textContent = textarea.value;
+                commentsList.appendChild(comment);
+                textarea.value = '';
+            } else {
+                alert('Please write a comment!');
+            }
+        }
+
+        function searchMovies() {
+            const searchInput = document.getElementById('search-bar').value.toLowerCase();
+            const movies = document.querySelectorAll('.movie-card');
+
+            movies.forEach(movie => {
+                const title = movie.querySelector('h3').textContent.toLowerCase();
+                if (title.includes(searchInput)) {
+                    movie.style.display = 'block';
+                } else {
+                    movie.style.display = 'none';
+                }
+            });
+        }
+
+        function filterByCategory() {
+            const category = document.getElementById('category-filter').value;
+            const movies = document.querySelectorAll('.movie-card');
+
+            movies.forEach(movie => {
+                const movieCategory = movie.getAttribute('data-category');
+                if (category === '' || movieCategory === category) {
+                    movie.style.display = 'block';
+                } else {
+                    movie.style.display = 'none';
+                }
+            });
+        }
+        function searchSeries() {
+    const searchInput = document.getElementById('series-search-bar').value.toLowerCase();
+    const series = document.querySelectorAll('#series-grid .movie-card');
+
+    series.forEach(serie => {
+        const title = serie.querySelector('h3').textContent.toLowerCase();
+        if (title.includes(searchInput)) {
+            serie.style.display = 'block';
+        } else {
+            serie.style.display = 'none';
+        }
+    });
+}
+
+        function filterSeriesByCategory() {
+    const category = document.getElementById("series-category-filter").value;
+    const series = document.querySelectorAll("#series-grid .movie-card");
+
+    series.forEach(serie => {
+        const seriesCategory = serie.getAttribute("data-category");
+        if (category === "" || seriesCategory === category) {
+            serie.style.display = "block";
+        } else {
+            serie.style.display = "none";
+        }
+    });
+    
+
+}
+
+    </script>
+</body>
+</html>
